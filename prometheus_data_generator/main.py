@@ -6,6 +6,7 @@ import threading
 import logging
 from os import _exit, environ
 import yaml
+import ssl
 from flask import Flask, Response
 from prometheus_client import Gauge, Counter, Summary, Histogram
 from prometheus_client import generate_latest, CollectorRegistry
@@ -260,8 +261,12 @@ class PrometheusDataGenerator:
         """
         Launch the flask webserver on a thread.
         """
+
+        context = ssl.SSLContext()
+        context.load_cert_chain("ssl.crt", "private.key")
+
         threading.Thread(
-            target=self.app.run,
+            target=self.app.run(ssl_context=context),
             kwargs={"port": "9000", "host": "0.0.0.0"}
         ).start()
 
