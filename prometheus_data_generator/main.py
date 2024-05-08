@@ -266,8 +266,8 @@ class PrometheusDataGenerator:
         context.load_cert_chain("ssl.crt", "private.key")
 
         threading.Thread(
-            target=self.app.run(ssl_context=context),
-            kwargs={"port": "9000", "host": "0.0.0.0"}
+            target=self.app.run,
+            kwargs={"port": "9000", "host": "0.0.0.0", "ssl_context": context}
         ).start()
 
 
