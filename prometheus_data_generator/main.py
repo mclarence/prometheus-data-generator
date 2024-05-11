@@ -58,8 +58,10 @@ class PrometheusDataGenerator:
         """
         self.app = Flask(__name__)
 
-        self.app.config["BASIC_AUTH_USERNAME"] = "changeme"
-        self.app.config["BASIC_AUTH_PASSWORD"] = "changeme"
+        self.data = read_configuration()
+
+        self.app.config["BASIC_AUTH_USERNAME"] = self.data["basic_auth"]["username"]
+        self.app.config["BASIC_AUTH_PASSWORD"] = self.data["basic_auth"]["password"]
 
         self.basic_auth = BasicAuth(self.app)
 
@@ -73,7 +75,6 @@ class PrometheusDataGenerator:
         """
         self.threads = []
         self.registry = CollectorRegistry()
-        self.data = read_configuration()
         for metric in self.data["config"]:
             if "labels" in metric:
                 labels = metric["labels"]

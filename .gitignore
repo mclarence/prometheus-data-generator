@@ -128,3 +128,4 @@ pip-selfcheck.json
 ssl.crt
 private.key
 key.pem
+config.yml
