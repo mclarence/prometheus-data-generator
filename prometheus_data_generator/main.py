@@ -8,6 +8,7 @@ from os import _exit, environ
 import yaml
 import ssl
 from flask import Flask, Response
+from flask_basicauth import BasicAuth
 from prometheus_client import Gauge, Counter, Summary, Histogram
 from prometheus_client import generate_latest, CollectorRegistry
 
@@ -56,6 +57,13 @@ class PrometheusDataGenerator:
         the threads that will update the metrics.
         """
         self.app = Flask(__name__)
+
+        self.app.config["BASIC_AUTH_USERNAME"] = "changeme"
+        self.app.config["BASIC_AUTH_PASSWORD"] = "changeme"
+
+        self.basic_auth = BasicAuth(self.app)
+
+
         self.serve_metrics()
         self.init_metrics()
 
@@ -235,6 +243,7 @@ class PrometheusDataGenerator:
             return page
 
         @self.app.route("/metrics/")
+        @self.basic_auth.required
         def metrics():
             """
             Plain method to expose the prometheus metrics. Every time it's
